@@ -5,6 +5,6 @@
 * (including web sites) or distributed to other students.
 *
 * Name: Long Nguyen  Student ID: 155176183   Date: May 25th, 2021
-* Heroku Link: _______________________________________________________________
+* Heroku Link: https://web422-assignment-lnguyen97.herokuapp.com/
 *
 ********************************************************************************/
