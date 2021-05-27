@@ -53,7 +53,11 @@ app.get("/api/restaurants", (req, res) =>{
     console.log(query.borough);
 
     db.getAllRestaurants(query.page, query.perPage, query.borough).then((data)=>{
-        res.status(200).send(data);
+        if(data == null){
+            res.status(200).send({message: "No Restaurants in DB"})
+        }else{
+            res.status(200).send(data);
+        }
     }).catch((error)=>{
         res.status(500).send(error);
     });
@@ -65,9 +69,13 @@ app.get("/api/restaurants/:_id", (req, res)=>{
     
 
     db.getRestaurantById(params).then((data)=>{
-        res.status(200).send(data);
+        if(data!=null){
+            res.status(200).send(data);
+        }else{
+            res.status(200).send({message:`There is not restaurant #id ${params}`});
+        }
     }).catch((error)=>{
-        res.status(500).send("Not found: "+error);
+        res.status(500).send("Error: "+error);
     })
 });
 
@@ -77,8 +85,16 @@ app.put("/api/restaurants/:_id", (req, res)=>{
     console.log("Body");
     const input=req.body;
     console.log(input);
-    db.updateRestaurantById(input, params).then((data)=>{
-        res.status(200).send(data);
+    db.getRestaurantById(params).then((data)=>{
+        if(data!=null){
+            db.updateRestaurantById(input, params).then((data)=>{
+                res.status(200).send(data);
+            }).catch((error)=>{
+                res.status(500).send("Error: "+error);
+            })
+        }else{
+            res.status(200).send({message:`There is not restaurant #id ${params}`});
+        }
     }).catch((error)=>{
         res.status(500).send("Error: "+error);
     })
@@ -87,12 +103,19 @@ app.put("/api/restaurants/:_id", (req, res)=>{
 app.delete("/api/restaurants/:_id", (req, res)=>{
     const params=req.params._id;
     console.log(params);
-
-    db.deleteRestaurantById(params).then((data)=>{
-        res.status(204).send(data);
+    db.getRestaurantById(params).then((data)=>{
+        if(data!=null){
+            db.deleteRestaurantById(params).then((data)=>{
+                res.status(204).send(data);
+            }).catch((error)=>{
+                res.status(500).send(error);
+            });
+        }else{
+            res.status(200).send({message:`There is not restaurant #id ${params}`});
+        }
     }).catch((error)=>{
-        res.status(500).send(error);
-    });
+        res.status(500).send("Error: "+error);
+    })
 })
 
 
